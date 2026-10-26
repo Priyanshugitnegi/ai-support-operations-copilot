@@ -1,6 +1,7 @@
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -8,7 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from the project root
 load_dotenv(BASE_DIR / ".env")
 
+
+# --------------------------------------------------
 # Security settings
+# --------------------------------------------------
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 if not SECRET_KEY:
@@ -18,17 +23,25 @@ if not SECRET_KEY:
 
 DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = (
-    ["127.0.0.1", "localhost"]
-    if DEBUG
-    else [
+if DEBUG:
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+else:
+    ALLOWED_HOSTS = [
         host.strip()
         for host in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
         if host.strip()
     ]
-)
 
-# Application definition
+    render_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+
+    if render_hostname:
+        ALLOWED_HOSTS.append(render_hostname)
+
+
+# --------------------------------------------------
+# Applications
+# --------------------------------------------------
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -37,12 +50,19 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "tickets",
-    "knowledge_base"
+    "knowledge_base",
 ]
+
+
+# --------------------------------------------------
+# Middleware
+# --------------------------------------------------
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -50,6 +70,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+
+# --------------------------------------------------
+# URL and template configuration
+# --------------------------------------------------
 
 ROOT_URLCONF = "config.urls"
 
@@ -70,7 +95,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+# --------------------------------------------------
 # Database
+# --------------------------------------------------
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -78,7 +107,11 @@ DATABASES = {
     }
 }
 
+
+# --------------------------------------------------
 # Password validation
+# --------------------------------------------------
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
@@ -106,17 +139,63 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# --------------------------------------------------
 # Internationalization
+# --------------------------------------------------
+
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Static files
-STATIC_URL = "static/"
 
-# Email configuration for development
+# --------------------------------------------------
+# Static files
+# --------------------------------------------------
+
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+# --------------------------------------------------
+# Email
+# --------------------------------------------------
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-# Default primary key type
+
+# --------------------------------------------------
+# Default primary key
+# --------------------------------------------------
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# --------------------------------------------------
+# Django REST Framework authentication
+# --------------------------------------------------
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+
+# --------------------------------------------------
+# Production HTTPS security
+# --------------------------------------------------
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
+
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True

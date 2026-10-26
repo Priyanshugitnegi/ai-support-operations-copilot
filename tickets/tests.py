@@ -1,10 +1,12 @@
 
+import json
+import os
 from unittest.mock import MagicMock, patch
 
 from django.test import SimpleTestCase
 
-from tickets.ai_service import analyze_ticket
-from tickets.schemas import TicketAnalysis
+from tickets.ai_service import analyze_ticket, generate_customer_reply
+from tickets.schemas import TicketAnalysis, CustomerReply
 
 
 class AnalyzeTicketTests(SimpleTestCase):
@@ -40,14 +42,14 @@ class AnalyzeTicketTests(SimpleTestCase):
         }
 
         mock_response = MagicMock()
-        mock_response.choices[0].message.content = (
-            __import__("json").dumps(expected_result)
+        mock_response.choices[0].message.content = json.dumps(
+            expected_result
         )
         mock_groq.return_value.chat.completions.create.return_value = (
             mock_response
         )
 
-        with patch.dict("os.environ", {"GROQ_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"GROQ_API_KEY": "test-key"}):
             result = analyze_ticket(
                 "Refund not received",
                 "I returned my order but have not received my refund.",
@@ -59,9 +61,7 @@ class AnalyzeTicketTests(SimpleTestCase):
         mock_search.assert_called_once()
         mock_groq.return_value.chat.completions.create.assert_called_once()
 
-        call_args = (
-            mock_groq.return_value.chat.completions.create.call_args
-        )
+        call_args = mock_groq.return_value.chat.completions.create.call_args
         user_message = call_args.kwargs["messages"][1]["content"]
 
         self.assertIn("Refund Processing Guidelines", user_message)
@@ -85,14 +85,14 @@ class AnalyzeTicketTests(SimpleTestCase):
         }
 
         mock_response = MagicMock()
-        mock_response.choices[0].message.content = (
-            __import__("json").dumps(expected_result)
+        mock_response.choices[0].message.content = json.dumps(
+            expected_result
         )
         mock_groq.return_value.chat.completions.create.return_value = (
             mock_response
         )
 
-        with patch.dict("os.environ", {"GROQ_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"GROQ_API_KEY": "test-key"}):
             result = analyze_ticket(
                 "General question",
                 "I need some help.",
@@ -100,9 +100,7 @@ class AnalyzeTicketTests(SimpleTestCase):
 
         self.assertIsInstance(result, TicketAnalysis)
 
-        call_args = (
-            mock_groq.return_value.chat.completions.create.call_args
-        )
+        call_args = mock_groq.return_value.chat.completions.create.call_args
         user_message = call_args.kwargs["messages"][1]["content"]
 
         self.assertIn(
@@ -112,11 +110,125 @@ class AnalyzeTicketTests(SimpleTestCase):
 
     @patch("tickets.ai_service.search_knowledge_articles")
     def test_analyze_ticket_requires_api_key(self, mock_search):
-        with patch.dict("os.environ", {}, clear=True):
+        with patch.dict(os.environ, {}, clear=True):
             with self.assertRaisesRegex(
                 RuntimeError,
                 "GROQ_API_KEY is missing from .env",
             ):
                 analyze_ticket("Test subject", "Test description")
+
+        mock_search.assert_not_called()
+
+
+class GenerateCustomerReplyTests(SimpleTestCase):
+    @patch("tickets.ai_service.Groq")
+    @patch("tickets.ai_service.search_knowledge_articles")
+    def test_generate_customer_reply_uses_knowledge_context(
+        self,
+        mock_search,
+        mock_groq,
+    ):
+        mock_search.return_value = [
+            {
+                "content": (
+                    "Title: Refund Processing Guidelines\n"
+                    "Content: Verify refund eligibility before "
+                    "confirming a refund."
+                ),
+                "metadata": {
+                    "title": "Refund Processing Guidelines",
+                    "source": "Internal Billing Guide",
+                },
+                "distance": 0.25,
+            }
+        ]
+
+        expected_reply = {
+            "customer_reply": (
+                "Hello, I understand your concern about the refund. "
+                "We need to verify your order details and refund "
+                "eligibility before confirming the next steps."
+            )
+        }
+
+        mock_response = MagicMock()
+        mock_response.choices[0].message.content = json.dumps(
+            expected_reply
+        )
+        mock_groq.return_value.chat.completions.create.return_value = (
+            mock_response
+        )
+
+        with patch.dict(os.environ, {"GROQ_API_KEY": "test-key"}):
+            result = generate_customer_reply(
+                "Refund not received",
+                "I returned my order but have not received my refund.",
+            )
+
+        self.assertIsInstance(result, CustomerReply)
+        self.assertIn("refund", result.customer_reply.lower())
+
+        mock_search.assert_called_once()
+        mock_groq.return_value.chat.completions.create.assert_called_once()
+
+        call_args = mock_groq.return_value.chat.completions.create.call_args
+        user_message = call_args.kwargs["messages"][1]["content"]
+
+        self.assertIn("Refund Processing Guidelines", user_message)
+        self.assertIn("verify refund eligibility", user_message.lower())
+
+    @patch("tickets.ai_service.Groq")
+    @patch("tickets.ai_service.search_knowledge_articles")
+    def test_generate_customer_reply_handles_no_knowledge_articles(
+        self,
+        mock_search,
+        mock_groq,
+    ):
+        mock_search.return_value = []
+
+        expected_reply = {
+            "customer_reply": (
+                "Hello, thank you for contacting support. "
+                "Our team will need to investigate this issue "
+                "before confirming the next steps."
+            )
+        }
+
+        mock_response = MagicMock()
+        mock_response.choices[0].message.content = json.dumps(
+            expected_reply
+        )
+        mock_groq.return_value.chat.completions.create.return_value = (
+            mock_response
+        )
+
+        with patch.dict(os.environ, {"GROQ_API_KEY": "test-key"}):
+            result = generate_customer_reply(
+                "Account question",
+                "I need help with my account.",
+            )
+
+        self.assertIsInstance(result, CustomerReply)
+        self.assertTrue(result.customer_reply.strip())
+
+        call_args = mock_groq.return_value.chat.completions.create.call_args
+        user_message = call_args.kwargs["messages"][1]["content"]
+
+        self.assertIn(
+            "No relevant knowledge articles were found.",
+            user_message,
+        )
+
+    @patch("tickets.ai_service.search_knowledge_articles")
+    def test_generate_customer_reply_requires_api_key(self, mock_search):
+        with patch.dict(os.environ, {}, clear=True):
+            with self.assertRaisesRegex(
+                RuntimeError,
+                "GROQ_API_KEY is missing from .env",
+            ):
+                generate_customer_reply(
+                    "Test subject",
+                    "Test description",
+                )
 
         mock_search.assert_not_called()

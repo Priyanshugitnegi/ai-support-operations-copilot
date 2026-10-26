@@ -3,12 +3,12 @@ import logging
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Ticket, TicketAnalysis
-from .serializers import TicketSerializer,TicketAnalysisSerializer
-from .ai_service import analyze_ticket
+from .serializers import TicketSerializer, TicketAnalysisSerializer
+from .ai_service import analyze_ticket, generate_customer_reply
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all().order_by("-created_at")
     serializer_class = TicketSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     @action(detail=True, methods=["post"])
     def analyze(self, request, pk=None):
@@ -53,12 +53,56 @@ class TicketViewSet(viewsets.ModelViewSet):
 
         except Exception:
             logger.exception("Ticket analysis failed")
+
             return Response(
-                {"error": "Ticket analysis failed. Please try again."},
+                {
+                    "error": (
+                        "Ticket analysis failed. Please try again."
+                    )
+                },
                 status=status.HTTP_502_BAD_GATEWAY,
             )
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="generate-reply",
+    )
+    def generate_reply(self, request, pk=None):
+        ticket = self.get_object()
+
+        try:
+            reply = generate_customer_reply(
+                subject=ticket.subject,
+                description=ticket.description,
+            )
+
+            return Response(
+                {
+                    "ticket_id": ticket.id,
+                    "customer_reply": reply.customer_reply,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception:
+            logger.exception(
+                "Customer reply generation failed for ticket %s",
+                ticket.id,
+            )
+
+            return Response(
+                {
+                    "error": (
+                        "Customer reply generation failed. "
+                        "Please try again."
+                    )
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
 
 class TicketAnalysisViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = TicketAnalysis.objects.all().order_by("-created_at")
     serializer_class = TicketAnalysisSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]

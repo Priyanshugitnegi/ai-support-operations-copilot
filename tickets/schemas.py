@@ -24,4 +24,16 @@ class TicketAnalysis(BaseModel):
     recommended_action: str = Field(
         description="The next action the support team should take"
     )
- 
+
+
+class CustomerReply(BaseModel):
+    customer_reply: str = Field(
+        min_length=1,
+        description=(
+            "A professional, empathetic response drafted for "
+            "the customer based on the ticket and available "
+            "knowledge-base guidance. The response must not "
+            "invent facts, promise unconfirmed outcomes, or "
+            "claim that an action has already been completed."
+        ),
+    )
