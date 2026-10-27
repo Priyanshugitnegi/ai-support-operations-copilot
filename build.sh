@@ -5,6 +5,5 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python manage.py collectstatic --noinput
 python manage.py migrate
-python manage.py create_admin_once
 python manage.py ensure_api_token
 python manage.py ingest_knowledge
