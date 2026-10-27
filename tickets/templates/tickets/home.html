@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SupportPilot AI | Intelligent Support Operations</title>
+    <meta name="description" content="AI-powered support ticket analysis and knowledge retrieval.">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #f5f7ff;
+            background:
+                radial-gradient(ellipse at 80% 10%, #1c3155 0, transparent 40%),
+                #0b1020;
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1100px, 90%);
+            margin: auto;
+        }
+
+        nav {
+            min-height: 85px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid #293650;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 750;
+            font-size: 19px;
+        }
+
+        .logo {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: #20365c;
+            color: #91b4ff;
+            font-size: 25px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            color: #b0bdd3;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 55px;
+            align-items: center;
+            padding: 100px 0 85px;
+        }
+
+        .eyebrow {
+            color: #91b4ff;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: clamp(42px, 6vw, 68px);
+            line-height: 1.08;
+            letter-spacing: -2px;
+            margin: 22px 0;
+        }
+
+        h1 span {
+            color: #7fa2ff;
+        }
+
+        .description {
+            color: #b0bdd3;
+            font-size: 17px;
+            line-height: 1.85;
+            max-width: 540px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-top: 30px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .primary {
+            background: #7fa2ff;
+            color: #091124;
+        }
+
+        .secondary {
+            border: 1px solid #40516f;
+            background: #141e32;
+        }
+
+        .preview {
+            padding: 24px;
+            border: 1px solid #344563;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #192640, #10182a);
+            box-shadow: 0 25px 70px #0004;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #293650;
+        }
+
+        .status {
+            color: #78e1b0;
+            font-size: 12px;
+        }
+
+        .ticket {
+            margin-top: 18px;
+            padding: 18px;
+            background: #10192b;
+            border: 1px solid #293650;
+            border-radius: 12px;
+        }
+
+        .label {
+            color: #91a1bd;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .ticket h3 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .ticket p {
+            color: #b0bdd3;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .tag {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 9px;
+            border-radius: 7px;
+            background: #23375b;
+            color: #adc5ff;
+            font-size: 11px;
+        }
+
+        .features {
+            padding-bottom: 80px;
+        }
+
+        .section-title {
+            margin: 15px 0 28px;
+            font-size: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .feature {
+            padding: 24px;
+            border: 1px solid #293650;
+            border-radius: 15px;
+            background: #111a2b;
+        }
+
+        .feature-icon {
+            font-size: 27px;
+        }
+
+        .feature h3 {
+            margin: 17px 0 10px;
+        }
+
+        .feature p {
+            color: #b0bdd3;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        footer {
+            padding: 25px 0;
+            border-top: 1px solid #293650;
+            color: #8998b2;
+            font-size: 13px;
+        }
+
+        @media (max-width: 760px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 65px 0;
+                gap: 40px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 12px;
+                font-size: 12px;
+            }
+
+            h1 {
+                letter-spacing: -1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <nav>
+            <a class="brand" href="/">
+                <span class="logo">✳</span>
+                <span>SupportPilot AI</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="/api/">API</a>
+                <a href="/admin/">Admin</a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <div class="eyebrow">AI-POWERED SUPPORT OPERATIONS</div>
+
+                    <h1>
+                        Support tickets,<br>
+                        meet <span>AI.</span>
+                    </h1>
+
+                    <p class="description">
+                        Turn incoming support requests into actionable insights.
+                        Analyze ticket categories and priorities, generate customer
+                        replies, and retrieve relevant knowledge with AI.
+                    </p>
+
+                    <div class="buttons">
+                        <a class="button primary"
+                           href="https://ai-support-operations-dashboard.onrender.com/">
+                            Launch Dashboard ↗
+                        </a>
+
+                        <a class="button secondary" href="/api/">
+                            Explore API
+                        </a>
+                    </div>
+                </div>
+
+                <aside class="preview">
+                    <div class="preview-header">
+                        <strong>AI Support Intelligence</strong>
+                        <span class="status">● AI-powered</span>
+                    </div>
+
+                    <div class="ticket">
+                        <div class="label">SAMPLE SUPPORT TICKET</div>
+                        <h3>Unable to access my account</h3>
+                        <p>
+                            A customer needs assistance signing in and
+                            accessing their account.
+                        </p>
+                        <span class="tag">Account Access</span>
+                    </div>
+
+                    <div class="ticket">
+                        <div class="label">AI ANALYSIS</div>
+                        <h3>Understand the issue</h3>
+                        <p>
+                            Identify the problem, assess priority,
+                            and recommend the next action.
+                        </p>
+                    </div>
+
+                    <div class="ticket">
+                        <div class="label">KNOWLEDGE RETRIEVAL</div>
+                        <h3>Find relevant guidance</h3>
+                        <p>
+                            Use knowledge-base content to support
+                            more informed ticket handling.
+                        </p>
+                    </div>
+                </aside>
+            </section>
+
+            <section class="features" id="features">
+                <div class="eyebrow">WHAT IT CAN DO</div>
+                <h2 class="section-title">Smarter support starts here.</h2>
+
+                <div class="feature-grid">
+                    <article class="feature">
+                        <div class="feature-icon">✳</div>
+                        <h3>AI Ticket Analysis</h3>
+                        <p>
+                            Analyze ticket descriptions to produce summaries,
+                            classifications and recommended actions.
+                        </p>
+                    </article>
+
+                    <article class="feature">
+                        <div class="feature-icon">✉</div>
+                        <h3>Customer Reply Generation</h3>
+                        <p>
+                            Generate a draft response to help support agents
+                            communicate with customers.
+                        </p>
+                    </article>
+
+                    <article class="feature">
+                        <div class="feature-icon">⌕</div>
+                        <h3>Knowledge Retrieval</h3>
+                        <p>
+                            Retrieve relevant knowledge articles to provide
+                            useful context for support workflows.
+                        </p>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            SupportPilot AI · AI Support Operations Copilot
+        </footer>
+
+    </div>
+</body>
+</html>

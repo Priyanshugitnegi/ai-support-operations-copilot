@@ -1,6 +1,7 @@
 
 import logging
 
+from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -10,7 +11,13 @@ from .models import Ticket, TicketAnalysis
 from .serializers import TicketSerializer, TicketAnalysisSerializer
 from .ai_service import analyze_ticket, generate_customer_reply
 
+
 logger = logging.getLogger(__name__)
+
+
+def home(request):
+    """Render the public project homepage."""
+    return render(request, "tickets/home.html")
 
 
 class TicketViewSet(viewsets.ModelViewSet):
@@ -56,9 +63,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
             return Response(
                 {
-                    "error": (
-                        "Ticket analysis failed. Please try again."
-                    )
+                    "error": "Ticket analysis failed. Please try again."
                 },
                 status=status.HTTP_502_BAD_GATEWAY,
             )
