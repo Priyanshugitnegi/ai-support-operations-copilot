@@ -37,6 +37,12 @@ else:
     if render_hostname:
         ALLOWED_HOSTS.append(render_hostname)
 
+    # Fail early if production hosts are not configured
+    if not ALLOWED_HOSTS:
+        raise RuntimeError(
+            "DJANGO_ALLOWED_HOSTS is not configured for production"
+        )
+
 
 # --------------------------------------------------
 # Applications
@@ -96,12 +102,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-
 # --------------------------------------------------
 # Database
 # --------------------------------------------------
 
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+
 USE_SQLITE_FOR_TESTS = (
     os.getenv("DJANGO_USE_SQLITE_FOR_TESTS", "False").lower() == "true"
 )
@@ -123,6 +129,7 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
 
 # --------------------------------------------------
 # Password validation

@@ -4,6 +4,7 @@
    PROFESSIONAL LIGHT + NIGHT THEMES
 ========================================================= */
 
+/* LIGHT THEME */
 :root {
     --page: #f3f5f9;
     --panel: #ffffff;
@@ -22,7 +23,7 @@
     --shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
-/* Night palette activated by Python theme marker */
+/* NIGHT THEME */
 .stApp:has(#night-theme-marker) {
     --page: #0b1120;
     --panel: #151f32;
@@ -41,7 +42,9 @@
     --shadow: none;
 }
 
-/* Application backgrounds */
+/* =========================================================
+   APPLICATION BACKGROUNDS
+========================================================= */
 
 .stApp,
 [data-testid="stAppViewContainer"],
@@ -57,10 +60,123 @@
 
 .block-container {
     max-width: 1450px;
-    padding: 2rem 2.25rem 3rem;
+    padding: 2.5rem 2.25rem 3rem !important;
+    overflow: visible !important;
 }
 
-/* Headings */
+/* =========================================================
+   DASHBOARD HERO HEADER
+========================================================= */
+
+.hero-card {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0.5rem 0 1.5rem;
+    padding: 1.25rem 1.5rem;
+    box-sizing: border-box;
+    overflow: visible !important;
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.hero-card .eyebrow {
+    display: block;
+    margin: 0 0 0.5rem;
+    padding: 0;
+    color: var(--primary) !important;
+    font-size: 0.78rem;
+    font-weight: 750;
+    letter-spacing: 0.09em;
+    line-height: 1.5;
+    overflow: visible;
+}
+
+.stApp:has(#night-theme-marker) .hero-card .eyebrow {
+    color: #a5b4fc !important;
+}
+
+.hero-card .hero-title {
+    display: block;
+    margin: 0 0 0.5rem;
+    padding: 0;
+    color: var(--ink) !important;
+    font-size: 1.8rem;
+    font-weight: 750;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.hero-card .hero-copy {
+    display: block;
+    margin: 0;
+    padding: 0;
+    color: var(--text) !important;
+    font-size: 1rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+[data-testid="stSidebar"] {
+    background-color: var(--panel) !important;
+    border-right: 1px solid var(--border) !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    background-color: var(--panel) !important;
+}
+
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+    color: var(--ink) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"],
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+    color: var(--muted) !important;
+}
+
+[data-testid="stSidebar"] hr {
+    border: 0;
+    border-top: 1px solid var(--border) !important;
+    opacity: 1;
+}
+
+[data-testid="stSidebar"] .stButton > button {
+    background-color: var(--panel-alt) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 8px;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+    background-color: var(--soft) !important;
+    border-color: var(--primary) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    color: var(--text) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+    color: var(--ink) !important;
+}
+
+/* =========================================================
+   HEADINGS
+========================================================= */
 
 .stApp h1,
 .stApp h2,
@@ -86,7 +202,9 @@
     font-weight: 650 !important;
 }
 
-/* Text */
+/* =========================================================
+   TEXT
+========================================================= */
 
 .stApp p,
 .stApp li,
@@ -107,7 +225,18 @@
     font-size: 0.85rem;
 }
 
-/* Dividers */
+/* Links */
+.stApp a {
+    color: #3182ce;
+}
+
+.stApp a:hover {
+    color: var(--primary);
+}
+
+/* =========================================================
+   DIVIDERS
+========================================================= */
 
 .stApp hr {
     border: 0;
@@ -116,17 +245,20 @@
     opacity: 1;
 }
 
-/* Metrics */
+/* =========================================================
+   METRICS
+========================================================= */
 
 [data-testid="stMetric"] {
     background-color: var(--panel) !important;
     border: 1px solid var(--border) !important;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 1.2rem;
     min-height: 112px;
     box-shadow: var(--shadow);
 }
 
+[data-testid="stMetricLabel"],
 [data-testid="stMetricLabel"] p {
     color: var(--muted) !important;
     font-size: 0.86rem !important;
@@ -139,12 +271,14 @@
     font-weight: 750 !important;
 }
 
-/* Ticket cards */
+/* =========================================================
+   TICKET CARDS AND CONTAINERS
+========================================================= */
 
 [data-testid="stVerticalBlockBorderWrapper"] {
     background-color: var(--panel) !important;
     border: 1px solid var(--border) !important;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: var(--shadow);
 }
 
@@ -152,16 +286,20 @@
     color: var(--text);
 }
 
-/* Forms */
+/* =========================================================
+   FORMS
+========================================================= */
 
 [data-testid="stForm"] {
     background-color: var(--panel) !important;
     border: 1px solid var(--border) !important;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 1.35rem;
 }
 
-/* Text inputs and text areas */
+/* =========================================================
+   TEXT INPUTS AND TEXT AREAS
+========================================================= */
 
 .stApp input,
 .stApp textarea,
@@ -195,7 +333,14 @@
     box-shadow: 0 0 0 1px var(--primary) !important;
 }
 
-/* Select boxes */
+/* Hide Streamlit's form submission hint */
+[data-testid="InputInstructions"] {
+    display: none !important;
+}
+
+/* =========================================================
+   SELECT BOXES
+========================================================= */
 
 [data-baseweb="select"] > div {
     background-color: var(--input) !important;
@@ -210,7 +355,9 @@
     -webkit-text-fill-color: var(--ink) !important;
 }
 
-/* Dropdown menus */
+/* =========================================================
+   DROPDOWN MENUS
+========================================================= */
 
 [data-baseweb="popover"],
 [data-baseweb="menu"],
@@ -228,7 +375,9 @@
     background-color: var(--soft) !important;
 }
 
-/* Buttons */
+/* =========================================================
+   BUTTONS
+========================================================= */
 
 .stApp .stButton > button,
 .stApp .stFormSubmitButton > button,
@@ -242,7 +391,7 @@
     font-size: 0.9rem;
     font-weight: 650;
     box-shadow: none;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .stApp .stButton > button:hover,
@@ -254,7 +403,6 @@
 }
 
 /* Primary buttons */
-
 .stApp .stButton > button[kind="primary"],
 .stApp .stFormSubmitButton > button[kind="primary"] {
     background-color: var(--primary) !important;
@@ -268,14 +416,18 @@
     color: #ffffff !important;
 }
 
-/* Toggle and checkbox */
+/* =========================================================
+   TOGGLES AND CHECKBOXES
+========================================================= */
 
 [data-testid="stToggle"] label,
 [data-testid="stCheckbox"] label {
     color: var(--ink) !important;
 }
 
-/* Alerts */
+/* =========================================================
+   ALERTS AND STATUS MESSAGES
+========================================================= */
 
 [data-testid="stAlert"] {
     border-radius: 9px;
@@ -285,7 +437,9 @@
     color: var(--ink) !important;
 }
 
-/* Expanders */
+/* =========================================================
+   EXPANDERS
+========================================================= */
 
 [data-testid="stExpander"] {
     background-color: var(--panel) !important;
@@ -293,7 +447,13 @@
     border-radius: 10px;
 }
 
-/* Accessibility */
+[data-testid="stExpander"] summary {
+    color: var(--ink) !important;
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
 
 .stApp button:focus-visible,
 .stApp input:focus-visible,
@@ -302,11 +462,131 @@
     outline-offset: 2px;
 }
 
-/* Responsive layout */
+/* =========================================================
+   LOGIN PAGE
+   These rules activate only while .login-wrap exists.
+   Dashboard tabs and forms are not affected.
+========================================================= */
+
+.stApp:has(.login-wrap) .block-container {
+    max-width: 1100px;
+    padding-top: 2rem !important;
+}
+
+.login-wrap {
+    max-width: 760px;
+    margin: 1rem auto 1.5rem;
+    padding: 0;
+}
+
+.login-card {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    padding: 2.25rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(99, 102, 241, 0.12),
+            transparent 45%
+        ),
+        var(--panel);
+    box-shadow: var(--shadow);
+}
+
+.login-card .eyebrow {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    color: var(--primary) !important;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.stApp:has(.login-wrap):has(#night-theme-marker) .login-card .eyebrow {
+    color: #a5b4fc !important;
+}
+
+.login-card h1 {
+    margin: 0 0 0.8rem !important;
+    font-size: 2.3rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.04em;
+}
+
+.login-card p {
+    max-width: 560px;
+    margin-bottom: 0;
+    color: var(--text) !important;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+/* Login tabs only */
+.stApp:has(.login-wrap) [data-testid="stTabs"] {
+    max-width: 560px;
+    margin: 1rem auto 0;
+}
+
+.stApp:has(.login-wrap) [data-testid="stTabs"] [role="tablist"] {
+    gap: 1rem;
+    padding: 0 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.stApp:has(.login-wrap) [data-testid="stTabs"] button[role="tab"] {
+    padding: 0.75rem 0.3rem;
+    color: var(--muted) !important;
+    font-size: 0.95rem;
+    font-weight: 650;
+}
+
+.stApp:has(.login-wrap) [data-testid="stTabs"]
+button[role="tab"][aria-selected="true"] {
+    color: var(--primary) !important;
+    border-bottom-color: var(--primary) !important;
+}
+
+/* Login forms only */
+.stApp:has(.login-wrap) [data-testid="stForm"] {
+    margin-top: 0.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px;
+    background: var(--panel) !important;
+    box-shadow: var(--shadow);
+}
+
+.stApp:has(.login-wrap) [data-testid="stForm"] input {
+    min-height: 42px;
+}
+
+.stApp:has(.login-wrap) [data-testid="stFormSubmitButton"] button {
+    min-height: 46px;
+    margin-top: 0.35rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+/* =========================================================
+   RESPONSIVE LAYOUT
+========================================================= */
 
 @media (max-width: 900px) {
     .block-container {
-        padding: 1.5rem 1.2rem 2rem;
+        padding: 2rem 1.2rem 2rem !important;
+    }
+
+    .hero-card {
+        padding: 1.1rem 1.2rem;
+    }
+
+    .hero-card .hero-title {
+        font-size: 1.55rem;
     }
 
     .stApp h1 {
@@ -321,7 +601,20 @@
 
 @media (max-width: 600px) {
     .block-container {
-        padding: 1rem 0.75rem 1.5rem;
+        padding: 1.5rem 0.75rem 1.5rem !important;
+    }
+
+    .hero-card {
+        padding: 1rem;
+        margin-top: 0.25rem;
+    }
+
+    .hero-card .hero-title {
+        font-size: 1.35rem;
+    }
+
+    .hero-card .hero-copy {
+        font-size: 0.92rem;
     }
 
     .stApp h1 {
@@ -332,9 +625,28 @@
         padding: 0.85rem;
         min-height: 95px;
     }
+
+    .login-wrap {
+        margin: 0.25rem auto 1rem;
+    }
+
+    .login-card {
+        padding: 1.4rem 1.2rem;
+        border-radius: 14px;
+    }
+
+    .login-card h1 {
+        font-size: 1.85rem !important;
+    }
+
+    .stApp:has(.login-wrap) [data-testid="stForm"] {
+        padding: 1rem;
+    }
 }
 
-/* Hide Streamlit footer */
+/* =========================================================
+   HIDE STREAMLIT FOOTER
+========================================================= */
 
 footer {
     visibility: hidden;

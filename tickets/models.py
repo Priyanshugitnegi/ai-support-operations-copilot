@@ -1,7 +1,5 @@
-from django.db import models
 
-# Create your models here.
-
+from django.conf import settings
 from django.db import models
 
 
@@ -26,6 +24,16 @@ class Ticket(models.Model):
         ("resolved", "Resolved"),
         ("closed", "Closed"),
     ]
+
+    # User who owns this ticket.
+    # Nullable temporarily to preserve existing database records.
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="support_tickets",
+        null=True,
+        blank=True,
+    )
 
     customer_name = models.CharField(max_length=150)
     customer_email = models.EmailField()
@@ -63,6 +71,7 @@ class TicketAnalysis(models.Model):
         on_delete=models.CASCADE,
         related_name="analyses",
     )
+
     summary = models.TextField()
     category = models.CharField(max_length=20)
     priority = models.CharField(max_length=10)
