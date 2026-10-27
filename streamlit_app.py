@@ -18,11 +18,16 @@ st.set_page_config(
 )
 
 BASE_DIR = Path(__file__).parent
-API_BASE_URL = "http://127.0.0.1:8000/api"
 
 load_dotenv(BASE_DIR / ".env")
 
+API_BASE_URL = os.getenv(
+    "DJANGO_API_URL",
+    "http://127.0.0.1:8000/api",
+).strip().rstrip("/")
+
 API_TOKEN = os.getenv("DJANGO_API_TOKEN", "").strip()
+
 
 API_HEADERS = (
     {"Authorization": f"Token {API_TOKEN}"}
