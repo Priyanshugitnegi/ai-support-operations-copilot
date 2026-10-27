@@ -31,14 +31,15 @@ BASE_DIR = Path(__file__).resolve().parent
 # Load local environment variables for development.
 load_dotenv(BASE_DIR / ".env")
 
+# Use the deployed Django backend by default.
 API_BASE_URL = os.getenv(
     "DJANGO_API_URL",
-    "http://127.0.0.1:8000/api",
+    "https://ai-support-operations-copilot.onrender.com/api",
 ).strip().rstrip("/")
 
-if not API_BASE_URL:
+if not API_BASE_URL.startswith(("http://", "https://")):
     raise RuntimeError(
-        "DJANGO_API_URL must contain a valid API base URL."
+        "DJANGO_API_URL must be a valid HTTP or HTTPS URL."
     )
 
 # =========================================================
